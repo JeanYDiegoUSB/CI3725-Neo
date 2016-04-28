@@ -178,11 +178,15 @@ instance Show Token where
 	show (TkNum (AlexPn _ line column) i)= "TkNum(" ++ show i ++ ") " ++ show line ++ " " ++ show column
 	show (TkId (AlexPn _ line column) s)= "TkId(" ++ show s ++ ") " ++ show line ++ " " ++ show column
 	
-myShow :: Show a => [a] -> String
+myShow :: [Token] -> String
 myShow [] = ""
-myShow (x:xs) = show x ++ ", " ++ myShow xs
+myShow (x:xs) = show x ++ "\n" ++ myShow xs
 
+myPrint :: [Token] -> IO()
+myPrint a = putStr $ myShow a
+
+main :: IO()
 main = do
-	s <- liftM lines getContents
-	(putStrLn . unlines) $ map myShow (mapM alexScanTokens s)
+	s <- getContents
+	myPrint (alexScanTokens s)
 }
