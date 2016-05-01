@@ -64,6 +64,7 @@ tokens :-
 	\'[a-zA-Z0-9]\'			{ \p s -> TkCaracter p s}
 	$digit+				{ \p s -> TkNum p (read s) }
 	$alpha [$alpha $digit \_]*	{ \p s -> TkId p s }
+	.				{ \p s -> TkError p s }
 
 {
 -- Cada accion tiene tipo :: AlexPosn -> String -> Token
@@ -122,7 +123,65 @@ data Token =
 	TkTrasposicion AlexPosn		|
 	TkCaracter AlexPosn String	|
 	TkNum AlexPosn Int		|
-	TkId AlexPosn String
+	TkId AlexPosn String		|
+	TkError AlexPosn String
+
+instance Eq Token where
+	TkWith _ == TkWith _ = True
+	TkBegin _ == TkBegin _ = True
+	TkEnd _ == TkEnd _ = True
+	TkIf _ == TkIf _ = True
+	TkVar _ == TkVar _ = True
+	TkInt _ == TkInt _ = True
+	TkBool _ == TkBool _ = True
+	TkChar _ == TkChar _ = True
+	TkMatrix _ == TkMatrix _ = True
+	TkOf _ == TkOf _ = True
+	TkFor _ == TkFor _ = True
+	TkFrom _ == TkFrom _ = True
+	TkTo _ == TkTo _ = True
+	TkPrint _ == TkPrint _ = True
+	TkOtherwise _ == TkOtherwise _ = True
+	TkStep _ == TkStep _ = True
+	TkWhile _ == TkWhile _ = True
+	TkRead _ == TkRead _ = True
+	TkFalse _ == TkFalse _ = True
+	TkTrue _ == TkTrue _ = True
+	TkComa _ == TkComa _ = True
+	TkPunto _ == TkPunto _ = True
+	TkDosPuntos _ == TkDosPuntos _ = True
+	TkParAbre _ == TkParAbre _ = True
+	TkParCierra _ == TkParCierra _ = True
+	TkCorcheteAbre _ == TkCorcheteAbre _ = True
+	TkCorcheteCierra _ == TkCorcheteCierra _ = True
+	TkLlaveAbre _ == TkLlaveAbre _ = True
+	TkLlaveCierra _ == TkLlaveCierra _ = True
+	TkHacer _ == TkHacer _ = True
+	TkAsignacion _ == TkAsignacion _ = True
+	TkSuma _ == TkSuma _ = True
+	TkResta _ == TkResta _ = True
+	TkMult _ == TkMult _ = True
+	TkDiv _ == TkDiv _ = True
+	TkMod _ == TkMod _ = True
+	TkConjuncion _ == TkConjuncion _ = True
+	TkDisyuncion _ == TkDisyuncion _ = True
+	TkNegacion _ == TkNegacion _ = True
+	TkMenor _ == TkMenor _ = True
+	TkMenorIgual _ == TkMenorIgual _ = True
+	TkMayor _ == TkMayor _ = True
+	TkMayorIgual _ == TkMayorIgual _ = True
+	TkIgual _ == TkIgual _ = True
+	TkSiguienteCar _ == TkSiguienteCar _ = True
+	TkAnteriorCar _ == TkAnteriorCar _ = True
+	TkValorAscii _ == TkValorAscii _ = True
+	TkConcatenacion _ == TkConcatenacion _ = True
+	TkRotacion _ == TkRotacion _ = True
+	TkTrasposicion _ == TkTrasposicion _ = True
+	TkCaracter _ _ == TkCaracter _ _ = True
+	TkNum _ _ == TkNum _ _ = True
+	TkId _ _ == TkId _ _ = True
+	TkError _ _ == TkError _ _ = True
+	_ == _ = False
 
 instance Show Token where
 	show (TkWith (AlexPn _ line column)) = "TkWith" ++ " " ++ show line ++ " " ++ show column
@@ -178,15 +237,7 @@ instance Show Token where
 	show (TkCaracter (AlexPn _ line column) s) = "TkCaracter("++ (init . tail $ show s) ++ ") " ++ show line ++ " " ++ show column
 	show (TkNum (AlexPn _ line column) i )= "TkNum(" ++ show i ++ ") " ++ show line ++ " " ++ show column
 	show (TkId (AlexPn _ line column) s) = "TkId(" ++ show s ++ ") " ++ show line ++ " " ++ show column
-
---alexScanTokens :: String -> [token]
-alexScanTokens' str = go (alexStartPos,'\n',[],str)
-  where go inp@(pos,_,_,str) =
-          case alexScan inp 0 of
-                AlexEOF -> []
-                AlexError ((AlexPn _ line column),_,_,s) -> error $ "Error: Caracter inesperado " ++ s ++ " en la fila " ++ show line ++ ", columna " ++ show column
-                AlexSkip  inp' len     -> go inp'
-                AlexToken inp' len act -> act pos (take len str) : go inp'
+	show (TkError (AlexPn _ line column) s) = "Error: Caracter inesperado " ++ show s ++ " en la fila " ++ show line ++ ", columna " ++ show column
 
 myShow :: [Token] -> String
 myShow [] = ""
@@ -198,5 +249,10 @@ myPrint a = putStr $ myShow a
 main :: IO()
 main = do
 	s <- getContents
-	myPrint (alexScanTokens' s)
+	let
+		tokens = alexScanTokens s
+		error = TkError (AlexPn 1 1 1) ""
+	if error `elem` tokens
+		then myPrint [x | x <- tokens, x == error]
+		else myPrint tokens
 }
