@@ -248,11 +248,13 @@ myPrint a = putStr $ myShow a
 
 main :: IO()
 main = do
-	s <- getContents
-	let
-		tokens = alexScanTokens s
-		error = TkError (AlexPn 1 1 1) ""
-	if error `elem` tokens
-		then myPrint [x | x <- tokens, x == error]
-		else myPrint tokens
+    args <- getArgs
+    let handle = head args
+    s <- readFile handle
+    let
+        tokens = alexScanTokens s
+        error = TkError (AlexPn 1 1 1) ""
+    if error `elem` tokens
+        then myPrint [x | x <- tokens, x == error]
+        else myPrint tokens
 }
