@@ -11,20 +11,20 @@ $alpha = [a-zA-Z]
 tokens :-
 	$white+				;
 	"%%".+				;
-	"%{"[\n .]*"}%"			;
+	"%{"[\n .]*"}%"		;
 	with				{ \p s -> TkWith p }
 	begin				{ \p s -> TkBegin p }
-	end				{ \p s -> TkEnd p }
-	if				{ \p s -> TkIf p }
-	var				{ \p s -> TkVar p }
-	int				{ \p s -> TkInt p }
+	end					{ \p s -> TkEnd p }
+	if					{ \p s -> TkIf p }
+	var					{ \p s -> TkVar p }
+	int					{ \p s -> TkInt p }
 	bool				{ \p s -> TkBool p }
 	char				{ \p s -> TkChar p }
 	matrix				{ \p s -> TkMatrix p }
-	of				{ \p s -> TkOf p }
-	for				{ \p s -> TkFor p }
+	of					{ \p s -> TkOf p }
+	for					{ \p s -> TkFor p }
 	from				{ \p s -> TkFrom p }
-	to				{ \p s -> TkTo p }
+	to					{ \p s -> TkTo p }
 	print				{ \p s -> TkPrint p }
 	otherwise			{ \p s -> TkOtherwise p }
 	step				{ \p s -> TkStep p }
@@ -32,101 +32,102 @@ tokens :-
 	read				{ \p s -> TkRead p }
 	False				{ \p s -> TkFalse p }
 	True				{ \p s -> TkTrue p }
-	\,				{ \p s -> TkComa p }
-	\.				{ \p s -> TkPunto p }
-	\:				{ \p s -> TkDosPuntos p }
-	\(				{ \p s -> TkParAbre p }
-	\)				{ \p s -> TkParCierra p }
-	\[				{ \p s -> TkCorcheteAbre p }
-	\]				{ \p s -> TkCorcheteCierra p }
-	\{				{ \p s -> TkLlaveAbre p }
-	\}				{ \p s -> TkLlaveCierra p }
+	\,					{ \p s -> TkComa p }
+	\.					{ \p s -> TkPunto p }
+	\:					{ \p s -> TkDosPuntos p }
+	\(					{ \p s -> TkParAbre p }
+	\)					{ \p s -> TkParCierra p }
+	\[					{ \p s -> TkCorcheteAbre p }
+	\]					{ \p s -> TkCorcheteCierra p }
+	\{					{ \p s -> TkLlaveAbre p }
+	\}					{ \p s -> TkLlaveCierra p }
 	"->"				{ \p s -> TkHacer p }
 	"<-"				{ \p s -> TkAsignacion p }
-	\+				{ \p s -> TkSuma p }
-	\-				{ \p s -> TkResta p }
-	\*				{ \p s -> TkMult p }
-	\/				{ \p s -> TkDiv p }
-	\%				{ \p s -> TkMod p }
+	\+					{ \p s -> TkSuma p }
+	\-					{ \p s -> TkResta p }
+	\*					{ \p s -> TkMult p }
+	\/					{ \p s -> TkDiv p }
+	\%					{ \p s -> TkMod p }
 	"/\"				{ \p s -> TkConjuncion p }
 	"\/"				{ \p s -> TkDisyuncion p }
-	not				{ \p s -> TkNegacion p }
-	\<				{ \p s -> TkMenor p }
+	not					{ \p s -> TkNegacion p }
+	\<					{ \p s -> TkMenor p }
 	"<="				{ \p s -> TkMenorIgual p }
-	\>				{ \p s -> TkMayor p }
+	\>					{ \p s -> TkMayor p }
 	">="				{ \p s -> TkMayorIgual p }
-	\=				{ \p s -> TkIgual p }
+	\=					{ \p s -> TkIgual p }
 	"++"				{ \p s -> TkSiguienteCar p }
 	"--"				{ \p s -> TkAnteriorCar p }
-	\#				{ \p s -> TkValorAscii p }
+	\#					{ \p s -> TkValorAscii p }
 	"::"				{ \p s -> TkConcatenacion p }
-	\$				{ \p s -> TkRotacion p }
-	\?				{ \p s -> TkTrasposicion p }
-	\'[a-zA-Z0-9]\'			{ \p s -> TkCaracter p s}
+	\$					{ \p s -> TkRotacion p }
+	\?					{ \p s -> TkTrasposicion p }
+	\'[a-zA-Z0-9]\'		{ \p s -> TkCaracter p s}
 	$digit+				{ \p s -> TkNum p (read s) }
 	$alpha [$alpha $digit \_]*	{ \p s -> TkId p s }
-	.				{ \p s -> TkError p s }
+	.					{ \p s -> TkError p s }
 
 {
 -- Cada accion tiene tipo :: AlexPosn -> String -> Token
 
 -- Tipo Token:
 data Token = 
-	TkWith AlexPosn			|
-	TkBegin AlexPosn		|
-	TkEnd AlexPosn			|
-	TkIf AlexPosn			|
-	TkVar AlexPosn			|
-	TkInt AlexPosn			|
-	TkBool AlexPosn			|
-	TkChar AlexPosn			|
-	TkMatrix AlexPosn		|
-	TkOf AlexPosn			|
-	TkFor AlexPosn			|
-	TkFrom AlexPosn			|
-	TkTo AlexPosn			|
-	TkPrint AlexPosn		|
+	TkWith AlexPosn				|
+	TkBegin AlexPosn			|
+	TkEnd AlexPosn				|
+	TkIf AlexPosn				|
+	TkVar AlexPosn				|
+	TkInt AlexPosn				|
+	TkBool AlexPosn				|
+	TkChar AlexPosn				|
+	TkMatrix AlexPosn			|
+	TkOf AlexPosn				|
+	TkFor AlexPosn				|
+	TkFrom AlexPosn				|
+	TkTo AlexPosn				|
+	TkPrint AlexPosn			|
 	TkOtherwise AlexPosn		|
-	TkStep AlexPosn			|
-	TkWhile AlexPosn		|
-	TkRead AlexPosn			|
-	TkFalse AlexPosn		|
-	TkTrue AlexPosn			|
-	TkComa AlexPosn			|
-	TkPunto AlexPosn		|
+	TkStep AlexPosn				|
+	TkWhile AlexPosn			|
+	TkRead AlexPosn				|
+	TkFalse AlexPosn			|
+	TkTrue AlexPosn				|
+	TkComa AlexPosn				|
+	TkPunto AlexPosn			|
 	TkDosPuntos AlexPosn		|
-	TkParAbre AlexPosn		|
+	TkParAbre AlexPosn			|
 	TkParCierra AlexPosn		|
 	TkCorcheteAbre AlexPosn		|
 	TkCorcheteCierra AlexPosn	|
 	TkLlaveAbre AlexPosn		|
 	TkLlaveCierra AlexPosn		|
-	TkHacer AlexPosn		|
+	TkHacer AlexPosn			|
 	TkAsignacion AlexPosn		|
-	TkSuma AlexPosn			|
-	TkResta AlexPosn		|
-	TkMult AlexPosn			|
-	TkDiv AlexPosn			|
-	TkMod AlexPosn			|
+	TkSuma AlexPosn				|
+	TkResta AlexPosn			|
+	TkMult AlexPosn				|
+	TkDiv AlexPosn				|
+	TkMod AlexPosn				|
 	TkConjuncion AlexPosn		|
 	TkDisyuncion AlexPosn		|
-	TkNegacion AlexPosn		|
-	TkMenor AlexPosn		|
+	TkNegacion AlexPosn			|
+	TkMenor AlexPosn			|
 	TkMenorIgual AlexPosn		|
-	TkMayor AlexPosn		|
+	TkMayor AlexPosn			|
 	TkMayorIgual AlexPosn		|
-	TkIgual AlexPosn		|
+	TkIgual AlexPosn			|
 	TkSiguienteCar AlexPosn		|
 	TkAnteriorCar AlexPosn		|
 	TkValorAscii AlexPosn		|
 	TkConcatenacion AlexPosn	|
-	TkRotacion AlexPosn		|
+	TkRotacion AlexPosn			|
 	TkTrasposicion AlexPosn		|
 	TkCaracter AlexPosn String	|
-	TkNum AlexPosn Int		|
+	TkNum AlexPosn Int			|
 	TkId AlexPosn String		|
 	TkError AlexPosn String
 
+-- Tipo Token como instancia de Eq 
 instance Eq Token where
 	TkWith _ == TkWith _ = True
 	TkBegin _ == TkBegin _ = True
@@ -184,6 +185,7 @@ instance Eq Token where
 	TkError _ _ == TkError _ _ = True
 	_ == _ = False
 
+-- Tipo Token como instancia de Show
 instance Show Token where
 	show (TkWith (AlexPn _ line column)) = "TkWith" ++ " " ++ show line ++ " " ++ show column
 	show (TkBegin (AlexPn _ line column)) = "TkBegin" ++ " " ++ show line ++ " " ++ show column
@@ -240,22 +242,25 @@ instance Show Token where
 	show (TkId (AlexPn _ line column) s) = "TkId(" ++ show s ++ ") " ++ show line ++ " " ++ show column
 	show (TkError (AlexPn _ line column) s) = "Error: Caracter inesperado " ++ show s ++ " en la fila " ++ show line ++ ", columna " ++ show column
 
+-- show para la lista de Tokens
 myShow :: [Token] -> String
 myShow [] = ""
 myShow (x:xs) = show x ++ "\n" ++ myShow xs
 
+-- print para la lista de Tokens
 myPrint :: [Token] -> IO()
 myPrint a = putStr $ myShow a
 
+-- Programa principal
 main :: IO()
 main = do
-    args <- getArgs
-    let handle = head args
-    s <- readFile handle
+    args <- getArgs -- argumentos en la llamada
+    let handle = head args -- el primer argumento (archivo.neo)
+    s <- readFile handle -- se lee el archivo 
     let
-        tokens = alexScanTokens s
-        error = TkError (AlexPn 1 1 1) ""
-    if error `elem` tokens
-        then myPrint [x | x <- tokens, x == error]
-        else myPrint tokens
+        tokens = alexScanTokens s -- lista de Tokens
+        error = TkError (AlexPn 1 1 1) "" -- Token de error
+    if error `elem` tokens -- revisar si el Token de error esta en la lista de Tokens
+        then myPrint [x | x <- tokens, x == error] -- si está, imprimir sólo los errores
+        else myPrint tokens -- si no está, imprimir todos los Tokens encontrados
 }
