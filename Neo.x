@@ -1,4 +1,13 @@
 {
+{-
+    LexNeo
+    Description: Lexer generator file for language Neo
+
+    Author: Br. Jean Paul Alexander Lacour 12-10848
+            Br. Diego Daniel Pedroza Perez 12-11281
+
+    Last modification date: 03-05-16
+-}
 module Main (main) where
 import System.Environment
 }
@@ -68,9 +77,9 @@ tokens :-
 	.				{ \p s -> TkError p s }
 
 {
--- Cada accion tiene tipo :: AlexPosn -> String -> Token
+-- Each action has type :: AlexPosn -> String -> Token
 
--- Tipo Token:
+-- The token type:
 data Token = 
 	TkWith AlexPosn			|
 	TkBegin AlexPosn		|
@@ -127,7 +136,7 @@ data Token =
 	TkId AlexPosn String		|
 	TkError AlexPosn String
 
--- Tipo Token como instancia de Eq 
+-- Token type as an instance of Eq type class 
 instance Eq Token where
 	TkWith _ == TkWith _ = True
 	TkBegin _ == TkBegin _ = True
@@ -185,7 +194,7 @@ instance Eq Token where
 	TkError _ _ == TkError _ _ = True
 	_ == _ = False
 
--- Tipo Token como instancia de Show
+-- Token type as an instance of Show type class
 instance Show Token where
 	show (TkWith (AlexPn _ line column)) = "TkWith" ++ " " ++ show line ++ " " ++ show column
 	show (TkBegin (AlexPn _ line column)) = "TkBegin" ++ " " ++ show line ++ " " ++ show column
@@ -242,25 +251,25 @@ instance Show Token where
 	show (TkId (AlexPn _ line column) s) = "TkId(" ++ show s ++ ") " ++ show line ++ " " ++ show column
 	show (TkError (AlexPn _ line column) s) = "Error: Caracter inesperado " ++ show s ++ " en la fila " ++ show line ++ ", columna " ++ show column
 
--- show para la lista de Tokens
+-- show for List of Token
 myShow :: [Token] -> String
 myShow [] = ""
 myShow (x:xs) = show x ++ "\n" ++ myShow xs
 
--- print para la lista de Tokens
+-- print for List of Token
 myPrint :: [Token] -> IO()
 myPrint a = putStr $ myShow a
 
--- Programa principal
+-- Main program
 main :: IO()
 main = do
-    args <- getArgs -- argumentos en la llamada
-    let handle = head args -- el primer argumento (archivo.neo)
-    s <- readFile handle -- se lee el archivo 
+    args <- getArgs -- command line arguments
+    let handle = head args -- first argument (file.neo)
+    s <- readFile handle -- reading the file 
     let
-        tokens = alexScanTokens s -- lista de Tokens
-        error = TkError (AlexPn 1 1 1) "" -- Token de error
-    if error `elem` tokens -- revisar si el Token de error esta en la lista de Tokens
-        then myPrint [x | x <- tokens, x == error] -- si está, imprimir sólo los errores
-        else myPrint tokens -- si no está, imprimir todos los Tokens encontrados
+        tokens = alexScanTokens s -- List of Token
+        error = TkError (AlexPn 1 1 1) "" -- Error Token
+    if error `elem` tokens -- checks if a Error Token is on the List of Token
+        then myPrint [x | x <- tokens, x == error] -- if there is any mistake, only print those
+        else myPrint tokens -- otherwise, print all Tokens found
 }
