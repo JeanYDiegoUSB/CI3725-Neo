@@ -16,24 +16,24 @@ import System.Environment
 
 $digit = 0-9
 $alpha = [a-zA-Z]
+$spc = [\%\{]
 
 tokens :-
 	$white+				;
-	"%%".+				;
-	"%{"[\n .]*"}%"		;
+	(\%\{([^\}]|[\n]|(\{+([^\}\%]|[\n])))*\}+\%)|(\%\%.*)	;
 	with				{ \p s -> TkWith p }
 	begin				{ \p s -> TkBegin p }
-	end					{ \p s -> TkEnd p }
-	if					{ \p s -> TkIf p }
-	var					{ \p s -> TkVar p }
-	int					{ \p s -> TkInt p }
+	end				{ \p s -> TkEnd p }
+	if				{ \p s -> TkIf p }
+	var				{ \p s -> TkVar p }
+	int				{ \p s -> TkInt p }
 	bool				{ \p s -> TkBool p }
 	char				{ \p s -> TkChar p }
 	matrix				{ \p s -> TkMatrix p }
-	of					{ \p s -> TkOf p }
-	for					{ \p s -> TkFor p }
+	of				{ \p s -> TkOf p }
+	for				{ \p s -> TkFor p }
 	from				{ \p s -> TkFrom p }
-	to					{ \p s -> TkTo p }
+	to				{ \p s -> TkTo p }
 	print				{ \p s -> TkPrint p }
 	otherwise			{ \p s -> TkOtherwise p }
 	step				{ \p s -> TkStep p }
@@ -41,98 +41,98 @@ tokens :-
 	read				{ \p s -> TkRead p }
 	False				{ \p s -> TkFalse p }
 	True				{ \p s -> TkTrue p }
-	\,					{ \p s -> TkComa p }
-	\.					{ \p s -> TkPunto p }
-	\:					{ \p s -> TkDosPuntos p }
-	\(					{ \p s -> TkParAbre p }
-	\)					{ \p s -> TkParCierra p }
-	\[					{ \p s -> TkCorcheteAbre p }
-	\]					{ \p s -> TkCorcheteCierra p }
-	\{					{ \p s -> TkLlaveAbre p }
-	\}					{ \p s -> TkLlaveCierra p }
+	\,				{ \p s -> TkComa p }
+	\.				{ \p s -> TkPunto p }
+	\:				{ \p s -> TkDosPuntos p }
+	\(				{ \p s -> TkParAbre p }
+	\)				{ \p s -> TkParCierra p }
+	\[				{ \p s -> TkCorcheteAbre p }
+	\]				{ \p s -> TkCorcheteCierra p }
+	\{				{ \p s -> TkLlaveAbre p }
+	\}				{ \p s -> TkLlaveCierra p }
 	"->"				{ \p s -> TkHacer p }
 	"<-"				{ \p s -> TkAsignacion p }
-	\+					{ \p s -> TkSuma p }
-	\-					{ \p s -> TkResta p }
-	\*					{ \p s -> TkMult p }
-	\/					{ \p s -> TkDiv p }
-	\%					{ \p s -> TkMod p }
+	\+				{ \p s -> TkSuma p }
+	\-				{ \p s -> TkResta p }
+	\*				{ \p s -> TkMult p }
+	\/				{ \p s -> TkDiv p }
+	\%				{ \p s -> TkMod p }
 	"/\"				{ \p s -> TkConjuncion p }
 	"\/"				{ \p s -> TkDisyuncion p }
-	not					{ \p s -> TkNegacion p }
-	\<					{ \p s -> TkMenor p }
+	not				{ \p s -> TkNegacion p }
+	\<				{ \p s -> TkMenor p }
 	"<="				{ \p s -> TkMenorIgual p }
-	\>					{ \p s -> TkMayor p }
+	\>				{ \p s -> TkMayor p }
 	">="				{ \p s -> TkMayorIgual p }
-	\=					{ \p s -> TkIgual p }
+	\=				{ \p s -> TkIgual p }
 	"++"				{ \p s -> TkSiguienteCar p }
 	"--"				{ \p s -> TkAnteriorCar p }
-	\#					{ \p s -> TkValorAscii p }
+	\#				{ \p s -> TkValorAscii p }
 	"::"				{ \p s -> TkConcatenacion p }
-	\$					{ \p s -> TkRotacion p }
-	\?					{ \p s -> TkTrasposicion p }
-	\'[a-zA-Z0-9]\'		{ \p s -> TkCaracter p s}
+	\$				{ \p s -> TkRotacion p }
+	\?				{ \p s -> TkTrasposicion p }
+	\'[a-zA-Z0-9]\'			{ \p s -> TkCaracter p s}
 	$digit+				{ \p s -> TkNum p (read s) }
 	$alpha [$alpha $digit \_]*	{ \p s -> TkId p s }
-	.					{ \p s -> TkError p s }
+	(\%\{([^\}]|[\n]|(\{+([^\}\%]|[\n])))*)|(\}\%)|(.)	{ \p s -> TkError p s}
 
 {
 -- Each action has type :: AlexPosn -> String -> Token
 
 -- The token type:
 data Token = 
-	TkWith AlexPosn				|
-	TkBegin AlexPosn			|
-	TkEnd AlexPosn				|
-	TkIf AlexPosn				|
-	TkVar AlexPosn				|
-	TkInt AlexPosn				|
-	TkBool AlexPosn				|
-	TkChar AlexPosn				|
-	TkMatrix AlexPosn			|
-	TkOf AlexPosn				|
-	TkFor AlexPosn				|
-	TkFrom AlexPosn				|
-	TkTo AlexPosn				|
-	TkPrint AlexPosn			|
+	TkWith AlexPosn			|
+	TkBegin AlexPosn		|
+	TkEnd AlexPosn			|
+	TkIf AlexPosn			|
+	TkVar AlexPosn			|
+	TkInt AlexPosn			|
+	TkBool AlexPosn			|
+	TkChar AlexPosn			|
+	TkMatrix AlexPosn		|
+	TkOf AlexPosn			|
+	TkFor AlexPosn			|
+	TkFrom AlexPosn			|
+	TkTo AlexPosn			|
+	TkPrint AlexPosn		|
 	TkOtherwise AlexPosn		|
-	TkStep AlexPosn				|
-	TkWhile AlexPosn			|
-	TkRead AlexPosn				|
-	TkFalse AlexPosn			|
-	TkTrue AlexPosn				|
-	TkComa AlexPosn				|
-	TkPunto AlexPosn			|
+	TkStep AlexPosn			|
+	TkWhile AlexPosn		|
+	TkRead AlexPosn			|
+	TkFalse AlexPosn		|
+	TkTrue AlexPosn			|
+	TkComa AlexPosn			|
+	TkPunto AlexPosn		|
 	TkDosPuntos AlexPosn		|
-	TkParAbre AlexPosn			|
+	TkParAbre AlexPosn		|
 	TkParCierra AlexPosn		|
 	TkCorcheteAbre AlexPosn		|
 	TkCorcheteCierra AlexPosn	|
 	TkLlaveAbre AlexPosn		|
 	TkLlaveCierra AlexPosn		|
-	TkHacer AlexPosn			|
+	TkHacer AlexPosn		|
 	TkAsignacion AlexPosn		|
-	TkSuma AlexPosn				|
-	TkResta AlexPosn			|
-	TkMult AlexPosn				|
-	TkDiv AlexPosn				|
-	TkMod AlexPosn				|
+	TkSuma AlexPosn			|
+	TkResta AlexPosn		|
+	TkMult AlexPosn			|
+	TkDiv AlexPosn			|
+	TkMod AlexPosn			|
 	TkConjuncion AlexPosn		|
 	TkDisyuncion AlexPosn		|
-	TkNegacion AlexPosn			|
-	TkMenor AlexPosn			|
+	TkNegacion AlexPosn		|
+	TkMenor AlexPosn		|
 	TkMenorIgual AlexPosn		|
-	TkMayor AlexPosn			|
+	TkMayor AlexPosn		|
 	TkMayorIgual AlexPosn		|
-	TkIgual AlexPosn			|
+	TkIgual AlexPosn		|
 	TkSiguienteCar AlexPosn		|
 	TkAnteriorCar AlexPosn		|
 	TkValorAscii AlexPosn		|
 	TkConcatenacion AlexPosn	|
-	TkRotacion AlexPosn			|
+	TkRotacion AlexPosn		|
 	TkTrasposicion AlexPosn		|
 	TkCaracter AlexPosn String	|
-	TkNum AlexPosn Int			|
+	TkNum AlexPosn Int		|
 	TkId AlexPosn String		|
 	TkError AlexPosn String
 
@@ -249,8 +249,9 @@ instance Show Token where
 	show (TkCaracter (AlexPn _ line column) s) = "TkCaracter("++ (init . tail $ show s) ++ ") " ++ show line ++ " " ++ show column
 	show (TkNum (AlexPn _ line column) i )= "TkNum(" ++ show i ++ ") " ++ show line ++ " " ++ show column
 	show (TkId (AlexPn _ line column) s) = "TkId(" ++ show s ++ ") " ++ show line ++ " " ++ show column
-	show (TkError (AlexPn _ line column) s) = "Error: Caracter inesperado " ++ show s ++ " en la fila " ++ show line ++ ", columna " ++ show column
-
+	show (TkError (AlexPn _ line column) s) = if (length s) <= 2
+							then "Error: Caracter inesperado " ++ show s ++ " en la fila " ++ show line ++ ", columna " ++ show column
+							else "Error: Comentario que comienza en la fila " ++ show line ++ ", columna " ++ show column ++ " no termina en }%"
 -- show for List of Token
 myShow :: [Token] -> String
 myShow [] = ""
