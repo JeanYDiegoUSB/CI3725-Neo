@@ -4,9 +4,9 @@
 	Description: Lexer generator file for language Neo
 	
 	Author: Br. Jean Paul Alexander Lacour 12-10848
-			Br. Diego Daniel Pedroza Perez 12-11281
+		Br. Diego Daniel Pedroza Perez 12-11281
 	
-	Last modification date: 03-05-16
+	Last modification date: 04-05-16
 -}
 module Main (main) where
 import System.Environment
@@ -20,7 +20,7 @@ $spc = [\%\{]
 
 tokens :-
 	$white+				;
-	(\%\{([^\}]|[\n]|(\{+([^\}\%]|[\n])))*\}+\%)|(\%\%.*)	;
+        (\%\{([^\}]|[\n]|(\{+([^\}\%]|[\n])))*\}+\%)|(\%\%.*)	;
 	with				{ \p s -> TkWith p }
 	begin				{ \p s -> TkBegin p }
 	end				{ \p s -> TkEnd p }
@@ -135,64 +135,7 @@ data Token =
 	TkNum AlexPosn Int		|
 	TkId AlexPosn String		|
 	TkError AlexPosn String
-
--- Token type as an instance of Eq type class 
-instance Eq Token where
-	TkWith _ == TkWith _ = True
-	TkBegin _ == TkBegin _ = True
-	TkEnd _ == TkEnd _ = True
-	TkIf _ == TkIf _ = True
-	TkVar _ == TkVar _ = True
-	TkInt _ == TkInt _ = True
-	TkBool _ == TkBool _ = True
-	TkChar _ == TkChar _ = True
-	TkMatrix _ == TkMatrix _ = True
-	TkOf _ == TkOf _ = True
-	TkFor _ == TkFor _ = True
-	TkFrom _ == TkFrom _ = True
-	TkTo _ == TkTo _ = True
-	TkPrint _ == TkPrint _ = True
-	TkOtherwise _ == TkOtherwise _ = True
-	TkStep _ == TkStep _ = True
-	TkWhile _ == TkWhile _ = True
-	TkRead _ == TkRead _ = True
-	TkFalse _ == TkFalse _ = True
-	TkTrue _ == TkTrue _ = True
-	TkComa _ == TkComa _ = True
-	TkPunto _ == TkPunto _ = True
-	TkDosPuntos _ == TkDosPuntos _ = True
-	TkParAbre _ == TkParAbre _ = True
-	TkParCierra _ == TkParCierra _ = True
-	TkCorcheteAbre _ == TkCorcheteAbre _ = True
-	TkCorcheteCierra _ == TkCorcheteCierra _ = True
-	TkLlaveAbre _ == TkLlaveAbre _ = True
-	TkLlaveCierra _ == TkLlaveCierra _ = True
-	TkHacer _ == TkHacer _ = True
-	TkAsignacion _ == TkAsignacion _ = True
-	TkSuma _ == TkSuma _ = True
-	TkResta _ == TkResta _ = True
-	TkMult _ == TkMult _ = True
-	TkDiv _ == TkDiv _ = True
-	TkMod _ == TkMod _ = True
-	TkConjuncion _ == TkConjuncion _ = True
-	TkDisyuncion _ == TkDisyuncion _ = True
-	TkNegacion _ == TkNegacion _ = True
-	TkMenor _ == TkMenor _ = True
-	TkMenorIgual _ == TkMenorIgual _ = True
-	TkMayor _ == TkMayor _ = True
-	TkMayorIgual _ == TkMayorIgual _ = True
-	TkIgual _ == TkIgual _ = True
-	TkSiguienteCar _ == TkSiguienteCar _ = True
-	TkAnteriorCar _ == TkAnteriorCar _ = True
-	TkValorAscii _ == TkValorAscii _ = True
-	TkConcatenacion _ == TkConcatenacion _ = True
-	TkRotacion _ == TkRotacion _ = True
-	TkTrasposicion _ == TkTrasposicion _ = True
-	TkCaracter _ _ == TkCaracter _ _ = True
-	TkNum _ _ == TkNum _ _ = True
-	TkId _ _ == TkId _ _ = True
-	TkError _ _ == TkError _ _ = True
-	_ == _ = False
+        deriving (Eq)
 
 -- Token type as an instance of Show type class
 instance Show Token where
@@ -267,10 +210,13 @@ main = do
     args <- getArgs -- command line arguments
     let handle = head args -- first argument (file.neo)
     s <- readFile handle -- reading the file 
-    let
-        tokens = alexScanTokens s -- List of Token
-        error = TkError (AlexPn 1 1 1) "" -- Error Token
-    if error `elem` tokens -- checks if a Error Token is on the List of Token
-        then myPrint [x | x <- tokens, x == error] -- if there is any mistake, only print those
-        else myPrint tokens -- otherwise, print all Tokens found
+    let tokens = alexScanTokens s -- List of Token
+    let result = filter f tokens -- courtesy of Ricardo Monascal
+                    where
+                        f :: Token -> Bool
+                        f (TkError _ _) = True
+                        f _ = False
+    if result /= []
+        then myPrint result
+        else myPrint tokens
 }
