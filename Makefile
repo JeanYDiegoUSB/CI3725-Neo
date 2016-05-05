@@ -7,5 +7,5 @@ LexNeo.hs: LexNeo.x
 	alex LexNeo.x
 	
 clean:
-	rm *o
-	rm *hi
+	rm *.o
+	rm *.hi
