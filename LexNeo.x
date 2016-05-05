@@ -4,7 +4,7 @@
 	Description: Lexer generator file for language Neo
 	
 	Author: Br. Jean Paul Alexander Lacour 12-10848
-			Br. Diego Daniel Pedroza Perez 12-11281
+		Br. Diego Daniel Pedroza Perez 12-11281
 	
 	Last modification date: 03-05-16
 -}
