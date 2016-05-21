@@ -1,0 +1,84 @@
+ASIGNACION: Id <- EXP
+
+EXP: 	Literal Bool
+	| Literal Int
+	| Literal Char
+	| Var
+	| EXP_A
+	| EXP_B
+	| EXP_C
+	| EXP_M
+
+
+CONDICIONAL:	if EXP_B -> INSTR end
+		| if EXP_B -> INSTR otherwise INSTR end
+
+
+EXP_B:	True
+	| False
+	| BIN_R
+
+
+BIN_R:	_ ">" _
+	|_">="_
+	|_"<"_
+	|_"<="_
+	|_"="_
+	|_"/="_
+	|"("_")"
+
+EXP_C:	 _"++"
+	| _"--"
+	| "#"_
+
+
+EXP_A:	_"+"_
+	| _"-"_
+	| _"*"_
+	| _"/"_
+	| _"%"_
+	| "-"_
+	| "("_")"
+
+
+
+INSTR:	ASIGNACION
+	| CONDICIONAL
+	| INSTR.INSTR
+	| REP_DET
+	| REP_IND
+	| ALCANCE
+	| ENTRADA
+	| SALIDA
+
+
+REP_DET:"for" ID "from" EXP_A "to" EXP_A "->" INSTR "end"
+	|"for" ID "from" EXP_A "to" EXP_A "step" EXP_A "->" INSTR "end"
+
+REP_IND:"while" EXP_B "->" INSTR end
+
+ALCANCE: "with" DECLARACION	"begin" INSTR "end"
+	| "begin" INSTR "end"
+
+
+
+DECLARACION:	"var" ID ":" TIPO
+
+ID:	IDENTIFICADOR
+	IDENTIFICADOR, ID
+
+
+ENTRADA: "read" IDENTIFICADOR
+
+SALIDA:	"print" IDENTIFICADOR
+
+
+
+EXP_M:	Literal_Matriz
+	| Var
+	| EXP_M "::" EXP_M
+	| "$" EXP_M
+	| EXP_M"?"
+
+
+
