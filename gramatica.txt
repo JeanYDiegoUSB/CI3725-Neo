@@ -1,9 +1,14 @@
-ASIGNACION: Id <- EXP
+DECLARACION: "var" ID ":" TIPO
 
-EXP: 	Literal Bool
-	| Literal Int
-	| Literal Char
-	| Var
+ID:	VAR
+	| VAR, ID
+
+ASIGNACION: ID <- EXP
+
+EXP:  Literal_Bool
+	| Literal_Int
+	| Literal_Char
+	| VAR
 	| EXP_A
 	| EXP_B
 	| EXP_C
@@ -14,31 +19,30 @@ CONDICIONAL:	if EXP_B -> INSTR end
 		| if EXP_B -> INSTR otherwise INSTR end
 
 
-EXP_B:	True
-	| False
+EXP_B: Literal_Bool
 	| BIN_R
 
 
-BIN_R:	_ ">" _
-	|_">="_
-	|_"<"_
-	|_"<="_
-	|_"="_
-	|_"/="_
-	|"("_")"
+BIN_R:	EXP ">" EXP
+	| EXP ">="EXP
+	| EXP"<"EXP
+	| EXP "<=" EXP
+	| EXP "=" EXP
+	| EXP "/=" EXP
+	|"("EXP")"
 
-EXP_C:	 _"++"
-	| _"--"
-	| "#"_
+EXP_C: EXP "++"
+	| EXP "--"
+	| "#" EXP
 
 
-EXP_A:	_"+"_
-	| _"-"_
-	| _"*"_
-	| _"/"_
-	| _"%"_
-	| "-"_
-	| "("_")"
+EXP_A:	EXP "+" EXP
+	| EXP "-" EXP
+	| EXP "*" EXP
+	| EXP "/" EXP
+	| EXP "%" EXP
+	| "-" EXP
+	| "("EXP")"
 
 
 
@@ -62,12 +66,6 @@ ALCANCE: "with" DECLARACION	"begin" INSTR "end"
 
 
 
-DECLARACION:	"var" ID ":" TIPO
-
-ID:	IDENTIFICADOR
-	IDENTIFICADOR, ID
-
-
 ENTRADA: "read" IDENTIFICADOR
 
 SALIDA:	"print" IDENTIFICADOR
@@ -75,10 +73,64 @@ SALIDA:	"print" IDENTIFICADOR
 
 
 EXP_M:	Literal_Matriz
-	| Var
+	| VAR
 	| EXP_M "::" EXP_M
 	| "$" EXP_M
 	| EXP_M"?"
 
 
+Literal_Bool: True
+			| False
+
+Literal_Int: NUM
+			| -NUM
+
+NUM: 0
+	|1
+	|2
+	|3
+	|4
+	|5
+	|6
+	|7
+	|8
+	|9
+	|0NUM
+	|1NUM
+	|2NUM
+	|3NUM
+	|4NUM
+	|5NUM
+	|6NUM
+	|7NUM
+	|8NUM
+	|9NUM
+
+
+
+Literal_Char:	"\'"[a..zA..Z]"\'"
+		| '\n'
+		| '\\'
+		| '\t'
+		| '\''
+
+
+Literal_Matriz:  {Literal_M}
+			| Literal_M , Literal_M
+			| EXP
+
+	
+
+VAR: TkID
+
+
+TIPO: 	"int"
+	| "char"
+	| "matriz of" TAM TIPO
+
+TAM:	"["AUX_TAM "," NUM"]"
+	| "["NUM"]"
+
+AUX_TAM:	NUM
+	|	AUX_TAM,NUM
 
