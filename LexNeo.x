@@ -4,12 +4,11 @@
 	Description: Lexer generator file for language Neo
 	
 	Author: Br. Jean Paul Alexander Lacour 12-10848
-		Br. Diego Daniel Pedroza Perez 12-11281
+			Br. Diego Daniel Pedroza Perez 12-11281
 	
 	Last modification date: 03-05-16
 -}
-module Main (main) where
-import System.Environment
+module LexNeo where
 }
 
 %wrapper "posn"
@@ -34,7 +33,7 @@ tokens :-
     from				{ \p s -> TkFrom p }
     to					{ \p s -> TkTo p }
     print				{ \p s -> TkPrint p }
-    otherwise				{ \p s -> TkOtherwise p }
+    otherwise			{ \p s -> TkOtherwise p }
     step				{ \p s -> TkStep p }
     while				{ \p s -> TkWhile p }
     read				{ \p s -> TkRead p }
@@ -70,7 +69,7 @@ tokens :-
     "::"				{ \p s -> TkConcatenacion p }
     \$					{ \p s -> TkRotacion p }
     \?					{ \p s -> TkTrasposicion p }
-    \'[\ a-zA-Z0-9]\'			{ \p s -> TkCaracter p s}
+    \'[\ a-zA-Z0-9]\'	{ \p s -> TkCaracter p s}
     $digit+				{ \p s -> TkNum p (read s) }
     $alpha [$alpha $digit \_]*		{ \p s -> TkId p s }
     (\%\{([^\}]|[\n]|(\{+([^\}\%]|[\n])))*)|(\}\%)|(.)    { \p s -> TkError p s}
@@ -81,67 +80,68 @@ tokens :-
 -- The token type:
 data Token =
 -- Neo's Keywords
-	TkWith AlexPosn			|
-	TkBegin AlexPosn		|
-	TkEnd AlexPosn			|
-	TkIf AlexPosn			|
-	TkVar AlexPosn			|
-	TkInt AlexPosn			|
-	TkBool AlexPosn			|
-	TkChar AlexPosn			|
-	TkMatrix AlexPosn		|
-	TkOf AlexPosn			|
-	TkFor AlexPosn			|
-	TkFrom AlexPosn			|
-	TkTo AlexPosn			|
-	TkPrint AlexPosn		|
-	TkOtherwise AlexPosn		|
-	TkStep AlexPosn			|
-	TkWhile AlexPosn		|
-	TkRead AlexPosn			|
-	TkFalse AlexPosn		|
-	TkTrue AlexPosn			|
+	TkWith AlexPosn			    |
+	TkBegin AlexPosn		    |
+	TkEnd AlexPosn			    |
+	TkIf AlexPosn			    |
+	TkVar AlexPosn			    |
+	TkInt AlexPosn			    |
+	TkBool AlexPosn		    	|
+	TkChar AlexPosn			    |
+	TkMatrix AlexPosn           |
+	TkOf AlexPosn			    |
+	TkFor AlexPosn              |
+	TkFrom AlexPosn			    |
+	TkTo AlexPosn		        |
+	TkPrint AlexPosn		    |
+	TkOtherwise AlexPosn	    |
+	TkStep AlexPosn			    |
+	TkWhile AlexPosn		    |
+	TkRead AlexPosn			    |
+	TkFalse AlexPosn		    |
+	TkTrue AlexPosn			    |
 
 -- Neo's separators
-	TkComa AlexPosn			|
-	TkPunto AlexPosn		|
-	TkDosPuntos AlexPosn		|
-	TkParAbre AlexPosn		|
-	TkParCierra AlexPosn		|
-	TkCorcheteAbre AlexPosn		|
+	TkComa AlexPosn			    |
+	TkPunto AlexPosn		    |
+	TkDosPuntos AlexPosn	    |
+	TkParAbre AlexPosn		    |
+	TkParCierra AlexPosn	    |
+	TkCorcheteAbre AlexPosn	    |
 	TkCorcheteCierra AlexPosn	|
-	TkLlaveAbre AlexPosn		|
-	TkLlaveCierra AlexPosn		|
-	TkHacer AlexPosn		|
-	TkAsignacion AlexPosn		|
+	TkLlaveAbre AlexPosn	    |
+	TkLlaveCierra AlexPosn	    |
+	TkHacer AlexPosn		    |
+	TkAsignacion AlexPosn	    |
 
 -- Neo's operators
-	TkSuma AlexPosn			|
-	TkResta AlexPosn		|
-	TkMult AlexPosn			|
-	TkDiv AlexPosn			|
-	TkMod AlexPosn			|
-	TkConjuncion AlexPosn		|
-	TkDisyuncion AlexPosn		|
-	TkNegacion AlexPosn		|
-	TkMenor AlexPosn		|
-	TkMenorIgual AlexPosn		|
-	TkMayor AlexPosn		|
-	TkMayorIgual AlexPosn		|
-	TkIgual AlexPosn		|
-	TkSiguienteCar AlexPosn		|
-	TkAnteriorCar AlexPosn		|
-	TkValorAscii AlexPosn		|
-	TkConcatenacion AlexPosn	|
-	TkRotacion AlexPosn		|
-	TkTrasposicion AlexPosn		|
+	TkSuma AlexPosn			    |
+	TkResta AlexPosn		    |
+	TkMult AlexPosn			    |
+	TkDiv AlexPosn			    |
+	TkMod AlexPosn			    |
+	TkConjuncion AlexPosn	    |
+	TkDisyuncion AlexPosn	    |
+	TkNegacion AlexPosn		    |
+	TkMenor AlexPosn		    |
+	TkMenorIgual AlexPosn	    |
+	TkMayor AlexPosn		    |
+	TkMayorIgual AlexPosn	    |
+	TkIgual AlexPosn		    |
+	TkDesigual AlexPosn			|	
+	TkSiguienteCar AlexPosn	    |
+	TkAnteriorCar AlexPosn	    |   
+	TkValorAscii AlexPosn	    |
+	TkConcatenacion AlexPosn    |
+	TkRotacion AlexPosn		    |
+	TkTrasposicion AlexPosn	    |
 	TkCaracter AlexPosn String	|
-	TkNum AlexPosn Int		|
-	TkId AlexPosn String		|
+	TkNum AlexPosn Int		    |
+	TkId AlexPosn String	    |
 
 -- Error Token
 	TkError AlexPosn String
-    	deriving (Eq)
+    deriving (Eq)
 
 -- Token type as an instance of Show type class
 instance Show Token where
@@ -201,28 +201,5 @@ instance Show Token where
 	show (TkError (AlexPn _ line column) s) = if (length s) <= 2
                                                 	then "Error: Caracter inesperado " ++ show s ++ " en la fila " ++ show line ++ ", columna " ++ show column
                                                 	else "Error: Comentario que comienza en la fila " ++ show line ++ ", columna " ++ show column ++ " no termina en }%"
--- show for List of Token
-myShow :: [Token] -> String
-myShow [] = ""
-myShow (x:xs) = show x ++ "\n" ++ myShow xs
 
--- print for List of Token
-myPrint :: [Token] -> IO()
-myPrint a = putStr $ myShow a
-
--- Main program
-main :: IO()
-main = do
-    args <- getArgs -- command line arguments
-    let handle = head args -- first argument (file.neo)
-    s <- readFile handle -- reading the file 
-    let tokens = alexScanTokens s -- List of Token
-    let result = filter f tokens -- courtesy of Ricardo Monascal
-                    where
-                        f :: Token -> Bool
-                        f (TkError _ _) = True
-                        f _ = False
-    if result /= []
-        then myPrint result
-        else myPrint tokens
 }
