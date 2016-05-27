@@ -17,6 +17,19 @@ import LexNeo
 %tokentype { Token }
 %error { parseError }
 
+%nonassoc '<' "<=" '>' ">=" '='
+%left "++" "--"
+%left "::"
+%left "\\/"
+%left "/\\"
+%left '+' '-'
+%left '$'
+%left '*' '/' '%'
+%left not
+%left Neg
+%left '#'
+%left '?' '[' ']'
+
 %token
     with                { TkWith (AlexPn _ _ _) }
     begin               { TkBegin (AlexPn _ _ _) }
@@ -94,7 +107,7 @@ EXP : EXP '+' EXP { Suma $1 $3 }
     | EXP '*' EXP { Mult $1 $3 }
     | EXP '/' EXP { Div $1 $3 }
     | EXP '%' EXP { Mod $1 $3 }
-    | '-' EXP { Negativo $2 }
+    | '-' EXP %prec Neg { Negativo $2 }
     | EXP '\\/' EXP { Disyuncion $1 $3 }
     | EXP '/\\' EXP { Conjuncion $1 $3 }
     | not EXP { Negacion $2 }
