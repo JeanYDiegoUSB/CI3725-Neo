@@ -1,4 +1,4 @@
-# Makefile for LexNeo.x
+# Makefile for SintNeo
 
 Main: Main.hs SintNeo.hs LexNeo.hs
 	ghc Main.hs -o SintNeo --make
