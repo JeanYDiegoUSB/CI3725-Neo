@@ -88,8 +88,8 @@ import LexNeo
 
 %%
 
-S : with var ID ':' Tipo begin INSTR end { ProgAlc $3 $5 $7 }
-    | begin INSTR end { Prog $2 }
+S : with var ID ':' Tipo begin Secuenciacion end { ProgAlc $3 $5 $7 }
+    | begin Secuenciacion end { Prog $2 }
 
 Secuenciacion : Secuenciacion INSTR { Secuencia ($2 : (getSecuencia $1)) }
     | INSTR { Secuencia [$1] }
@@ -147,8 +147,8 @@ Tipo : CHAR { TipoChar }
 parseError :: [Token] -> a
 parseError _ = error "Parse error"
 
-data S = ProgAlc ID Tipo INSTR
-    | Prog INSTR
+data S = ProgAlc ID Tipo Secuenciacion
+    | Prog Secuenciacion
     deriving(Eq,Show)
 
 data Secuenciacion = Secuencia {getSecuencia :: [INSTR]}
