@@ -64,25 +64,25 @@ import LexNeo
     ']'                 { TkCorcheteCierra (AlexPn _ _ _) }
     '{'                 { TkLlaveAbre (AlexPn _ _ _) }
     '}'                 { TkLlaveCierra (AlexPn _ _ _) }
-    '->'		{ TkHacer (AlexPn _ _ _) }
-    '<-'		{ TkAsignacion (AlexPn _ _ _) }
+    "->"		{ TkHacer (AlexPn _ _ _) }
+    "<-"		{ TkAsignacion (AlexPn _ _ _) }
     '+'                 { TkSuma (AlexPn _ _ _) }
     '-'                 { TkResta (AlexPn _ _ _) }
     '*'                 { TkMult (AlexPn _ _ _) }
     '/'			{ TkDiv (AlexPn _ _ _) }
     '%'			{ TkMod (AlexPn _ _ _) }
-    '/\\'		{ TkConjuncion (AlexPn _ _ _) }
-    '\\/'		{ TkDisyuncion (AlexPn _ _ _) }
+    "/\\"		{ TkConjuncion (AlexPn _ _ _) }
+    "\\/"		{ TkDisyuncion (AlexPn _ _ _) }
     not			{ TkNegacion (AlexPn _ _ _) }
     '<'			{ TkMenor (AlexPn _ _ _) }
-    '<='		{ TkMenorIgual (AlexPn _ _ _) }
+    "<="		{ TkMenorIgual (AlexPn _ _ _) }
     '>'			{ TkMayor (AlexPn _ _ _) }
-    '>='		{ TkMayorIgual (AlexPn _ _ _) }
+    ">="		{ TkMayorIgual (AlexPn _ _ _) }
     '='			{ TkIgual (AlexPn _ _ _) }
-    '++'		{ TkSiguienteCar (AlexPn _ _ _) }
-    '--'		{ TkAnteriorCar (AlexPn _ _ _) }
+    "++"		{ TkSiguienteCar (AlexPn _ _ _) }
+    "--"		{ TkAnteriorCar (AlexPn _ _ _) }
     '#'			{ TkValorAscii (AlexPn _ _ _) }
-    '::'		{ TkConcatenacion (AlexPn _ _ _) }
+    "::"		{ TkConcatenacion (AlexPn _ _ _) }
     '$'			{ TkRotacion (AlexPn _ _ _) }
     '?'			{ TkTrasposicion (AlexPn _ _ _) }
 
@@ -96,12 +96,12 @@ Secuenciacion : Secuenciacion INSTR { Secuencia ($2 : (getSecuencia $1)) }
 
 INSTR : with var ID ':' Tipo begin INSTR end { Alcance $3 $5 $7 }
     | begin INSTR end { AlcanceSD $2 }
-    | ident '<-' EXP '.' { Asignacion $1 $3 }
-    | if EXP '->' INSTR end { Condicional $2 $4 }
-    | if EXP '->' INSTR otherwise '->' INSTR end { CondicionalO $2 $4 $7 }
-    | for ident from EXP to EXP '->' INSTR end { RepeticionDet $2 $4 $6 $8 }
-    | for ident from EXP to EXP step EXP '->' INSTR end { RepeticionDetS $2 $4 $6 $8 $10 }
-    | while EXP '->' INSTR end { RepeticionInd $2 $4 }
+    | ident "<-" EXP '.' { Asignacion $1 $3 }
+    | if EXP "->" INSTR end { Condicional $2 $4 }
+    | if EXP "->" INSTR otherwise "->" INSTR end { CondicionalO $2 $4 $7 }
+    | for ident from EXP to EXP "->" INSTR end { RepeticionDet $2 $4 $6 $8 }
+    | for ident from EXP to EXP step EXP "->" INSTR end { RepeticionDetS $2 $4 $6 $8 $10 }
+    | while EXP "->" INSTR end { RepeticionInd $2 $4 }
     | read ident '.' { Leer $2 }
     | print EXP '.' { Imprimir $2 }
 
@@ -111,19 +111,19 @@ EXP : EXP '+' EXP { Suma $1 $3 }
     | EXP '/' EXP { Div $1 $3 }
     | EXP '%' EXP { Mod $1 $3 }
     | '-' EXP %prec Neg { Negativo $2 }
-    | EXP '\\/' EXP { Disyuncion $1 $3 }
-    | EXP '/\\' EXP { Conjuncion $1 $3 }
+    | EXP "\\/" EXP { Disyuncion $1 $3 }
+    | EXP "/\\" EXP { Conjuncion $1 $3 }
     | not EXP { Negacion $2 }
-    | EXP '++' { CarSig $1 }
-    | EXP '--' { CarAnt $1 }
+    | EXP "++" { CarSig $1 }
+    | EXP "--" { CarAnt $1 }
     | '#' EXP { ValorAscii $2 }
-    | EXP '::' EXP { Concatenacion $1 $3 }
+    | EXP "::" EXP { Concatenacion $1 $3 }
     | '$' EXP { Rotacion $2 }
     | EXP '?' { Transposicion $1 }
     | EXP '<' EXP { Menor $1 $3 }
-    | EXP '<=' EXP { MenorIgual $1 $3 }
+    | EXP "<=" EXP { MenorIgual $1 $3 }
     | EXP '>' EXP { Mayor $1 $3 }
-    | EXP '>=' EXP { MayorIgual $1 $3 }
+    | EXP ">=" EXP { MayorIgual $1 $3 }
     | EXP '=' EXP { Igual $1 $3 }
     | EXP '/''=' EXP { Desigual $1 $4 }
     | '(' EXP ')' { Parent $2 }
