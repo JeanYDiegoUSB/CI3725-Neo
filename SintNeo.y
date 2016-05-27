@@ -91,10 +91,12 @@ import LexNeo
 S : with var ID ':' Tipo begin INSTR end { ProgAlc $3 $5 $7 }
     | begin INSTR end { Prog $2 }
 
+Secuenciacion : Secuenciacion INSTR { Secuencia ($2 : (getSecuencia $1)) }
+    | INSTR { Secuencia [$1] }
+
 INSTR : with var ID ':' Tipo begin INSTR end { Alcance $3 $5 $7 }
     | begin INSTR end { AlcanceSD $2 }
     | ident '<-' EXP '.' { Asignacion $1 $3 }
-    | INSTR INSTR { Secuenciacion $1 $2 }
     | if EXP '->' INSTR end { Condicional $2 $4 }
     | if EXP '->' INSTR otherwise '->' INSTR end { CondicionalO $2 $4 $7 }
     | for ident from EXP to EXP '->' INSTR end { RepeticionDet $2 $4 $6 $8 }
@@ -149,10 +151,12 @@ data S = ProgAlc ID Tipo INSTR
     | Prog INSTR
     deriving(Eq,Show)
 
+data Secuenciacion = Secuencia {getSecuencia :: [INSTR]}
+    deriving (Eq,Show)
+    
 data INSTR = Alcance ID Tipo INSTR
     | AlcanceSD INSTR
     | Asignacion String EXP
-    | Secuenciacion INSTR INSTR
     | Condicional EXP INSTR
     | CondicionalO EXP INSTR INSTR
     | RepeticionDet String EXP EXP INSTR
