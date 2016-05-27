@@ -28,7 +28,8 @@ import LexNeo
 %left not
 %left Neg
 %left '#'
-%left '?' '[' ']'
+%left '?' '[' ']' 
+%nonassoc ','
 
 %token
     with                { TkWith (AlexPn _ _ _) }
