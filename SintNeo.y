@@ -88,13 +88,18 @@ import LexNeo
 
 %%
 
-S : with var ID ':' Tipo begin Secuenciacion end { ProgAlc $3 $5 $7 }
+S : with Declaracion begin Secuenciacion end { ProgAlc $2 $4 }
     | begin Secuenciacion end { Prog $2 }
 
 Secuenciacion : Secuenciacion INSTR { Secuencia ($2 : (getSecuencia $1)) }
     | INSTR { Secuencia [$1] }
 
-INSTR : with var ID ':' Tipo begin Secuenciacion end { Alcance $3 $5 $7 }
+Declaracion : Declaracion Declr { Declara ($2 : (getDeclara $1)) }
+    | Declr { Declara [$1] }
+
+Declr : var ID ':' Tipo { Dec $2 $4 }
+    
+INSTR : with Declaracion begin Secuenciacion end { Alcance $2 $4 }
     | begin Secuenciacion end { AlcanceSD $2 }
     | ident "<-" EXP '.' { Asignacion $1 $3 }
     | if EXP "->" Secuenciacion end { Condicional $2 $4 }
@@ -132,8 +137,9 @@ EXP : EXP '+' EXP { Suma $1 $3 }
     | num { NUM $1 }
     | false { Booleano False }
     | true { Booleano True }
-    | '{'EXP'}' { Matriz $2 }
-    | EXP'['EXP']' { Index $1 $3 }
+    | '{' EXP '}' { Matriz $2 }
+    | EXP '[' EXP ']' { IndexConId $1 $3 }
+    | '[' EXP ']' { Index $2 }
     | EXP ',' EXP { Separacion $1 $3 }
 
 ID : ID ',' ident { ListIdent ((Ident_ $3) : (getIdent $1)) }
@@ -145,16 +151,22 @@ Tipo : CHAR { TipoChar }
     | matrix EXP of Tipo { TipoMatrix $2 $4 }
 {
 parseError :: [Token] -> a
-parseError _ = error "Parse error"
+parseError tokens = error ("\tEsta fallando en " ++ (show $ head tokens))
 
-data S = ProgAlc ID Tipo Secuenciacion
+data S = ProgAlc Declaracion Secuenciacion
     | Prog Secuenciacion
     deriving(Eq,Show)
 
-data Secuenciacion = Secuencia {getSecuencia :: [INSTR]}
+data Secuenciacion = Secuencia { getSecuencia :: [INSTR] }
+    deriving (Eq,Show)
+
+data Declaracion = Declara { getDeclara :: [Declr] }
+    deriving (Eq,Show)
+
+data Declr = Dec ID Tipo
     deriving (Eq,Show)
     
-data INSTR = Alcance ID Tipo Secuenciacion
+data INSTR = Alcance Declaracion Secuenciacion
     | AlcanceSD Secuenciacion
     | Asignacion String EXP
     | Condicional EXP Secuenciacion
@@ -193,7 +205,8 @@ data EXP = Suma EXP EXP
     | NUM Int
     | Booleano Bool
     | Matriz EXP
-    | Index EXP EXP
+    | IndexConId EXP EXP
+    | Index EXP
     | Separacion EXP EXP
     deriving(Eq,Show)
 
@@ -208,7 +221,4 @@ data Tipo = TipoChar
     | TipoBool
     | TipoMatrix EXP Tipo
     deriving (Eq,Show)
-
-
 }
-
