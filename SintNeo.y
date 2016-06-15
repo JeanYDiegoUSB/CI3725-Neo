@@ -1,22 +1,23 @@
 {
 {-
 	SintNeo
-	Description: Parser generator file for language Neo
+	Descripcion: Archivo generador de un Parser para el lenguaje Neo
 	
-	Author: Br. Jean Paul Alexander Lacour 12-10848
+	Autor: Br. Jean Paul Alexander Lacour 12-10848
 			Br. Diego Daniel Pedroza Perez 12-11281
 	
-	Last modification date: 27-05-16
+	Ultima fecha de modificacion: 14-06-16
 -}
 module SintNeo where
 
 import LexNeo
 }
 
-%name parse
-%tokentype { Token }
-%error { parseError }
+%name parse -- Nombre de la funcion de analisis sintactico
+%tokentype { Token } -- Tipo del token
+%error { parseError } -- Funcion para error de sintaxis
 
+-- Precedencias y asociatividades
 %nonassoc '<' "<=" '>' ">=" '='
 %left "++" "--"
 %left "::"
@@ -31,6 +32,7 @@ import LexNeo
 %left '?' '[' ']' 
 %nonassoc ','
 
+-- Tokens
 %token
     with                { TkWith (AlexPn _ _ _) }
     begin               { TkBegin (AlexPn _ _ _) }
@@ -64,29 +66,31 @@ import LexNeo
     ']'                 { TkCorcheteCierra (AlexPn _ _ _) }
     '{'                 { TkLlaveAbre (AlexPn _ _ _) }
     '}'                 { TkLlaveCierra (AlexPn _ _ _) }
-    "->"		{ TkHacer (AlexPn _ _ _) }
-    "<-"		{ TkAsignacion (AlexPn _ _ _) }
+    "->"                { TkHacer (AlexPn _ _ _) }
+    "<-"                { TkAsignacion (AlexPn _ _ _) }
     '+'                 { TkSuma (AlexPn _ _ _) }
     '-'                 { TkResta (AlexPn _ _ _) }
     '*'                 { TkMult (AlexPn _ _ _) }
-    '/'			{ TkDiv (AlexPn _ _ _) }
-    '%'			{ TkMod (AlexPn _ _ _) }
-    "/\\"		{ TkConjuncion (AlexPn _ _ _) }
-    "\\/"		{ TkDisyuncion (AlexPn _ _ _) }
-    not			{ TkNegacion (AlexPn _ _ _) }
-    '<'			{ TkMenor (AlexPn _ _ _) }
-    "<="		{ TkMenorIgual (AlexPn _ _ _) }
-    '>'			{ TkMayor (AlexPn _ _ _) }
-    ">="		{ TkMayorIgual (AlexPn _ _ _) }
-    '='			{ TkIgual (AlexPn _ _ _) }
-    "++"		{ TkSiguienteCar (AlexPn _ _ _) }
-    "--"		{ TkAnteriorCar (AlexPn _ _ _) }
-    '#'			{ TkValorAscii (AlexPn _ _ _) }
-    "::"		{ TkConcatenacion (AlexPn _ _ _) }
-    '$'			{ TkRotacion (AlexPn _ _ _) }
-    '?'			{ TkTrasposicion (AlexPn _ _ _) }
+    '/'                 { TkDiv (AlexPn _ _ _) }
+    '%'                 { TkMod (AlexPn _ _ _) }
+    "/\\"               { TkConjuncion (AlexPn _ _ _) }
+    "\\/"               { TkDisyuncion (AlexPn _ _ _) }
+    not                 { TkNegacion (AlexPn _ _ _) }
+    '<'                 { TkMenor (AlexPn _ _ _) }
+    "<="                { TkMenorIgual (AlexPn _ _ _) }
+    '>'                 { TkMayor (AlexPn _ _ _) }
+    ">="                { TkMayorIgual (AlexPn _ _ _) }
+    '='                 { TkIgual (AlexPn _ _ _) }
+    "++"                { TkSiguienteCar (AlexPn _ _ _) }
+    "--"                { TkAnteriorCar (AlexPn _ _ _) }
+    '#'                 { TkValorAscii (AlexPn _ _ _) }
+    "::"                { TkConcatenacion (AlexPn _ _ _) }
+    '$'                 { TkRotacion (AlexPn _ _ _) }
+    '?'                 { TkTrasposicion (AlexPn _ _ _) }
 
 %%
+
+-- Definicion de la gramatica
 
 S : with Declaracion begin Secuenciacion end { ProgAlc $2 $4 }
     | begin Secuenciacion end { Prog $2 }
@@ -153,13 +157,16 @@ Tipo : CHAR { TipoChar }
     | BOOL { TipoBool }
     | matrix DIM of Tipo { TipoMatrix $2 $4 }
 {
+-- Para mostrar las secuencias de instrucciones
 showS :: [INSTR] -> String
 showS [] = ""
 showS (x:xs) = show x ++ showS xs
 
+-- Error
 parseError :: [Token] -> a
 parseError (x:xs) = error ("\tParse error: " ++ show x )
 
+-- Tipos de dato y sus instancias de Show
 data S = ProgAlc Declaracion Secuenciacion
     | Prog Secuenciacion
     deriving(Eq)
